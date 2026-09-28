@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Md. Rakibul Islam Mony | IT Support Executive</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js (3D Graphics Library) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --bg-light: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.85);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: rgba(226, 232, 240, 0.8);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #0b1329;
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fullsite 3D Canvas Background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Content Wrapper */
+        .content-layer {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header Navigation */
+        header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            color: #ffffff;
+            padding: 1rem 8%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-left: 24px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 8% 100px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 320px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(37, 99, 235, 0.3);
+            color: #60a5fa;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .hero-text h2 {
+            font-size: 1.4rem;
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hero-text p {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            min-width: 300px;
+        }
+
+        .hero-image img {
+            width: 290px;
+            height: 290px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #38bdf8;
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Glassmorphism Sections */
+        section {
+            padding: 80px 8%;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .section-subtitle {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 30px;
+            color: #ffffff;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+            box-shadow: 0 12px 40px 0 rgba(56, 189, 248, 0.2);
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .skill-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        /* Certifications Section */
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .cert-card {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .cert-badge-icon {
+            font-size: 2.2rem;
+            color: #38bdf8;
+        }
+
+        .cert-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            background: rgba(37, 99, 235, 0.3);
+            color: #93c5fd;
+            border-radius: 20px;
+            margin-top: 10px;
+        }
+
+        /* Timeline */
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline-card {
+            margin-bottom: 24px;
+        }
+
+        .company {
+            color: #38bdf8;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .timeline-card ul {
+            list-style: none;
+        }
+
+        .timeline-card ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .timeline-card ul li::before {
+            content: "•";
+            color: #38bdf8;
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+            border-color: #38bdf8;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        /* Contact Cards */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .contact-card {
+            text-align: center;
+        }
+
+        .contact-card i {
+            font-size: 1.8rem;
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+
+        .contact-card a {
+            color: #93c5fd;
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(11, 19, 41, 0.95);
+            color: #94a3b8;
+            text-align: center;
+            padding: 25px;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem 5%;
+            }
+            nav {
+                margin-top: 15px;
+            }
+            nav a {
+                margin: 0 10px;
+            }
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Three.js Background Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Content Layer -->
+    <div class="content-layer">
+        
+        <!-- Header Navigation -->
+        <header>
+            <div class="logo">RAKIBUL <span>MONY</span></div>
+            <nav>
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#certifications">Certifications</a>
+                <a href="#experience">Experience</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero" id="about">
+            <div class="hero-text">
+                <span class="badge"><i class="fa-solid fa-circle-check"></i> Certified IT Support Professional</span>
+                <h1>Md. Rakibul Islam Mony</h1>
+                <h2>IT Support Executive</h2>
+                <p>Results-driven IT professional with over 3 years of hands-on experience in managing enterprise IT infrastructure, technical support operations, LAN/WAN networking, and system administration[cite: 1].</p>
+                <div class="btn-group">
+                    <a href="#contact" class="btn btn-primary"><i class="fa-solid fa-envelope"></i> Contact Me</a>
+                    <a href="Md_Rakibul_Islam_Mony_Resume-ATS.pdf" target="_blank" class="btn btn-outline"><i class="fa-solid fa-download"></i> View CV</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="profile.jpg" alt="Md. Rakibul Islam Mony">
+            </div>
+        </section>
+
+        <!-- Technical Skills Section -->
+        <section id="skills">
+            <div class="section-header">
+                <h2 class="section-title">Technical Expertise</h2>
+                <p class="section-subtitle">Core competencies and system management abilities</p>
+            </div>
+            <div class="skills-grid">
+                <div class="glass-card">
+                    <div class="skill-icon"><i class="fa-solid fa-desktop"></i></div>
+                    <h3>IT Support & Systems</h3>
+                    <p>Desktop/Laptop Troubleshooting, Windows Server Administration, OS Deployment & Formatting, Hardware Assembly & Maintenance[cite: 1].</p>
+                </div>
+                <div class="glass-card">
+                    <div class="skill-icon"><i class="fa-solid fa-network-wired"></i></div>
+                    <h3>Networking & Infrastructure</h3>
+                    <p>LAN/WAN Setup & Optimization, Routing & Switching, TCP/IP, Subnetting, MikroTik, Firewall Configuration[cite: 1].</p>
+                </div>
+                <div class="glass-card">
+                    <div class="skill-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                    <h3>Tools & Monitoring</h3>
+                    <p>PRTG / Ping Tools, Helpdesk Ticketing Systems, Router & Switch Administration, Call Center Software, Asset Management[cite: 1].</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dedicated Certifications Section -->
+        <section id="certifications">
+            <div class="section-header">
+                <h2 class="section-title">Professional Certifications</h2>
+                <p class="section-subtitle">Industry-recognized credentials and technical training</p>
+            </div>
+            <div class="cert-grid">
+                <div class="glass-card cert-card">
+                    <div class="cert-badge-icon"><i class="fa-solid fa-award"></i></div>
+                    <div>
+                        <h3>CCNA (Cisco Certified Network Associate)</h3>
+                        <p style="color: #94a3b8;">e-Learning and Earning Project, Dhaka</p>
+                        <span class="cert-tag">Issued: Oct 2024</span>
+                    </div>
+                </div>
+                <div class="glass-card cert-card">
+                    <div class="cert-badge-icon"><i class="fa-solid fa-certificate"></i></div>
+                    <div>
+                        <h3>NSDA IT Support Level 3</h3>
+                        <p style="color: #94a3b8;">National Skills Development Authority, Bangladesh</p>
+                        <span class="cert-tag">Issued: Jul 2026</span>
+                    </div>
+                </div>
+                <div class="glass-card cert-card">
+                    <div class="cert-badge-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <h3>MTCNA Concepts Training</h3>
+                        <p style="color: #94a3b8;">MikroTik Concept Training Program</p>
+                        <span class="cert-tag">Issued: 2024</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience">
+            <div class="section-header">
+                <h2 class="section-title">Work Experience</h2>
+                <p class="section-subtitle">Career progression and major achievements</p>
+            </div>
+            <div class="timeline">
+                <div class="glass-card timeline-card">
+                    <h3>IT Support Executive</h3>
+                    <div class="company">F.S Business Corporation Ltd. | Aug 2025 - Present</div>
+                    <ul>
+                        <li>Direct day-to-day enterprise IT operations for 100+ end-users[cite: 1].</li>
+                        <li>Manage core network switches, routers, and firewall security policies[cite: 1].</li>
+                        <li>Reduced overall system technical downtime by 20% through preventative maintenance[cite: 1].</li>
+                    </ul>
+                </div>
+                <div class="glass-card timeline-card">
+                    <h3>Technical Support Engineer</h3>
+                    <div class="company">BracNet Limited | Feb 2024 - Jul 2025</div>
+                    <ul>
+                        <li>Delivered Tier-2/3 network support to corporate clients[cite: 1].</li>
+                        <li>Managed critical fiber network connectivity for Dhaka Metropolitan Police (DMP)[cite: 1].</li>
+                        <li>Boosted client network uptime to 99.8% with real-time monitoring[cite: 1].</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery">
+            <div class="section-header">
+                <h2 class="section-title">Photo Gallery</h2>
+                <p class="section-subtitle">Moments and professional snapshots</p>
+            </div>
+            <div class="gallery-grid">
+                <img src="photo1.jpg" alt="Photo 1">
+                <img src="photo2.jpg" alt="Photo 2">
+                <img src="photo3.jpg" alt="Photo 3">
+                <img src="photo4.jpg" alt="Photo 4">
+                <img src="photo5.jpg" alt="Photo 5">
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-subtitle">Feel free to reach out for collaborations or inquiries</p>
+            </div>
+            <div class="contact-grid">
+                <div class="glass-card contact-card">
+                    <i class="fa-solid fa-phone"></i>
+                    <h4>Phone</h4>
+                    <p style="color: #cbd5e1;">+8801785376239</p>
+                </div>
+                <div class="glass-card contact-card">
+                    <i class="fa-solid fa-envelope"></i>
+                    <h4>Email</h4>
+                    <p><a href="mailto:rakibulislammony123@gmail.com">rakibulislammony123@gmail.com</a></p>
+                </div>
+                <div class="glass-card contact-card">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <h4>Location</h4>
+                    <p style="color: #cbd5e1;">Ashkona, Dakshinkhan, Dhaka-1230</p>
+                </div>
+                <div class="glass-card contact-card">
+                    <i class="fa-brands fa-linkedin"></i>
+                    <h4>LinkedIn</h4>
+                    <p><a href="https://linkedin.com/in/rakibulmony" target="_blank">linkedin.com/in/rakibulmony</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2026 Md. Rakibul Islam Mony. All Rights Reserved.</p>
+        </footer>
+
+    </div>
+
+    <!-- 3D Three.js Animation Script -->
+    <script>
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // 3D Objects Array (Switches, Routers, Servers representation)
+        const techObjects = [];
+
+        // 1. Router Geometry (Box + Antenna Wireframe)
+        function createRouter() {
+            const group = new THREE.Group();
+            const bodyGeo = new THREE.BoxGeometry(4, 1, 3);
+            const material = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+            const body = new THREE.Mesh(bodyGeo, material);
+            group.add(body);
+
+            // Antennas
+            const antGeo = new THREE.CylinderGeometry(0.1, 0.1, 2, 8);
+            const ant1 = new THREE.Mesh(antGeo, material);
+            ant1.position.set(-1.5, 1.2, -1);
+            const ant2 = new THREE.Mesh(antGeo, material);
+            ant2.position.set(1.5, 1.2, -1);
+            group.add(ant1, ant2);
+
+            return group;
+        }
+
+        // 2. Network Switch / Server Rack Box
+        function createSwitch() {
+            const geo = new THREE.BoxGeometry(5, 1.2, 2.5);
+            const mat = new THREE.MeshBasicMaterial({ color: 0x2563eb, wireframe: true });
+            return new THREE.Mesh(geo, mat);
+        }
+
+        // 3. Camera (Sphere + Cone Mesh)
+        function createCamera() {
+            const group = new THREE.Group();
+            const bodyGeo = new THREE.SphereGeometry(1.2, 8, 8);
+            const mat = new THREE.MeshBasicMaterial({ color: 0x60a5fa, wireframe: true });
+            const body = new THREE.Mesh(bodyGeo, mat);
+
+            const lensGeo = new THREE.ConeGeometry(0.8, 1.5, 8);
+            const lens = new THREE.Mesh(lensGeo, mat);
+            lens.rotation.x = Math.PI / 2;
+            lens.position.z = 1;
+
+            group.add(body, lens);
+            return group;
+        }
+
+        // 4. Computer Monitor Frame
+        function createComputer() {
+            const group = new THREE.Group();
+            const screenGeo = new THREE.BoxGeometry(4, 2.5, 0.2);
+            const mat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true });
+            const screen = new THREE.Mesh(screenGeo, mat);
+
+            const standGeo = new THREE.CylinderGeometry(0.2, 0.8, 1.5, 8);
+            const stand = new THREE.Mesh(standGeo, mat);
+            stand.position.y = -1.5;
+
+            group.add(screen, stand);
+            return group;
+        }
+
+        // Add 3D items randomly across the site background
+        const creators = [createRouter, createSwitch, createCamera, createComputer];
+
+        for (let i = 0; i < 20; i++) {
+            const randomIndex = Math.floor(Math.random() * creators.length);
+            const obj = creators[randomIndex]();
+
+            obj.position.x = (Math.random() - 0.5) * 60;
+            obj.position.y = (Math.random() - 0.5) * 100;
+            obj.position.z = (Math.random() - 0.5) * 40 - 10;
+
+            obj.rotation.x = Math.random() * Math.PI;
+            obj.rotation.y = Math.random() * Math.PI;
+
+            scene.add(obj);
+            techObjects.push({
+                mesh: obj,
+                rotSpeedX: (Math.random() - 0.5) * 0.01,
+                rotSpeedY: (Math.random() - 0.5) * 0.01
+            });
+        }
+
+        // Connecting Network Lines / Particles Effect
+        const particleCount = 100;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 80;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particleMat = new THREE.PointsMaterial({ color: 0x38bdf8, size: 0.5, transparent: true, opacity: 0.6 });
+        const particles = new THREE.Points(geometry, particleMat);
+        scene.add(particles);
+
+        // Mouse Parallax Interaction
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
+        });
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate each 3D tech object
+            techObjects.forEach(item => {
+                item.mesh.rotation.x += item.rotSpeedX;
+                item.mesh.rotation.y += item.rotSpeedY;
+            });
+
+            // Parallax camera movement with mouse
+            camera.position.x += (mouseX * 10 - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY * 10 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Responsive Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
